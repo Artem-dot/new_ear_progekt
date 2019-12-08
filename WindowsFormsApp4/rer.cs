@@ -24,9 +24,9 @@ namespace WindowsFormsApp4
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            using (Form5 a = new Form5())
+            using (Form4 a = new Form4())
             {
-
+                a.ShowDialog();
             }
         }
     }
