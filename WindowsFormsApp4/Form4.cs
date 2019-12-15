@@ -31,6 +31,8 @@ namespace WindowsFormsApp4
             c_su = 0;
             c_sp = 0;
             c_l = l_i.Length;
+            start_game(wordArea, l_i);
+
         }
 
         private void Form4_Load(object sender, EventArgs e)
@@ -40,7 +42,7 @@ namespace WindowsFormsApp4
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            
+            BSK(wordArea, 'а', button1, startGame);
         }
 
         private void FtBox(RichTextBox word_area, char sumbol, Button cb, Button sb)
@@ -49,22 +51,36 @@ namespace WindowsFormsApp4
 
         static void s_g(RichTextBox wordArrea)
         {
-
+            Random random = new Random();
+            int wal = w.Length;
+            int iw = random.Next(0, wal);
+            c_w = w[iw];
+            c_l = l_i.Length;
+            c_su = 0;
+            s_t = get_show_text(c_w);
+            wordArrea.Text = s_t;
+            ct(wordArrea);
+           
         }
 
-        static void start_game(RichTextBox wordArrea, PictureBox l_i)
+        static void start_game(RichTextBox wordArrea, PictureBox[] l_i)
         {
+            s_g(wordArrea);
+            Bitmap bmp = new Bitmap(Properties.Resources.depositphotos_14850833_stock_photo_red_gift_box);
+            for(int i = 0; i < l_i.Length; i++)
+            {
+                l_i[i].SizeMode = PictureBoxSizeMode.Zoom;
+                l_i[i].Image = bmp;
+            }
 
         }
 
-        public static void BSK(RichTextBox wordArrea,char sumbol,Button cb,Button sb)
-        {
-            bool ip = is_contains(c_w,);
-        }
+        
         static void centering_text(RichTextBox word_area)
 
         {
-
+            word_area.SelectAll();
+            word_area.SelectionAlignment = HorizontalAlignment.Center;
         }
         static bool is_contains(string w, char s)
         {
@@ -96,6 +112,41 @@ namespace WindowsFormsApp4
 
             }
             return r;
+        }
+            public static void BSK(RichTextBox wordArrea,char sumbol,Button cb,Button sb)
+        {
+            bool ip = is_contains(c_w,sumbol);
+            if (ip)
+            {
+                s_t = get_nshow_text(c_w, sumbol, s_t);
+                wordArrea.Text = s_t;
+                centering_text(wordArrea);
+            }else
+            {
+                c_l--;
+                l_i[c_l].Image = null;
+            }
+            cb.Enabled = false;
+            if ((c_su + c_sp) == c_w.Length)
+            {
+                using (Form1 f = new Form1())
+                {
+                    f.ShowDialog();
+                }
+
+                sb.PerformClick();
+            }
+            else if (c_l == 0)
+            {
+                using (Form1 form = new Form1())
+                {
+                    form.ShowDialog();
+                }
+                sb.PerformClick();
+            }
+
+
+
         }
         public static void ct(RichTextBox word_area)
         {
