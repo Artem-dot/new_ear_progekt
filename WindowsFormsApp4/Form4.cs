@@ -12,26 +12,28 @@ namespace WindowsFormsApp4
 {
     public partial class Form4 : Form
     {
-        static string[] w;
-        static string c_w;
-        static string s_t;
-        static int c_su;
-        static int c_sp;
-        static int c_l;
-        static PictureBox[] l_i;
+        static string[] words;
+        static string current_word;
+        static string show_text;
+        static int count_success;
+        static int count_spaces;
+        static int lives;
+        static PictureBox[] lives_image;
 
         public Form4()
         {
             InitializeComponent();
+            lives_image = new PictureBox[] { pictureBox1, pictureBox2, pictureBox3,
+                                                pictureBox4, pictureBox5, pictureBox6};
+            words = new string[] { "карнавал", "елочка" , "праздник" , "сюрприз", "подарок" };
+            current_word = "";
+            show_text = "";
+            count_success = 0;
+            count_spaces = 0;
+            lives = lives_image.Length;
 
-            l_i = new PictureBox[] { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6 };
-            w = new string[] { "карнавал" + "елочка" + "праздник" + "сюрприз" + "подарок" };
-            c_w = "";
-            s_t = "";
-            c_su = 0;
-            c_sp = 0;
-            c_l = l_i.Length;
-            start_game(wordArea, l_i);
+            pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
+            start_game(wordArea, lives_image);
 
         }
 
@@ -42,133 +44,154 @@ namespace WindowsFormsApp4
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            BSK(wordArea, 'а', button1, startGame);
+            button_symbol_click(wordArea, 'а', button1, startGame);
         }
 
         private void FtBox(RichTextBox word_area, char sumbol, Button cb, Button sb)
         {
         }
 
-        static void s_g(RichTextBox wordArrea)
+        public static void start_game(RichTextBox wordArea)
         {
             Random random = new Random();
-            int wal = w.Length;
-            int iw = random.Next(0, wal);
-            c_w = w[iw];
-            c_l = l_i.Length;
-            c_su = 0;
-            s_t = get_show_text(c_w);
-            wordArrea.Text = s_t;
-            ct(wordArrea);
-           
+            int words_array_length = words.Length;
+            int index_word = random.Next(0, words_array_length);
+            current_word = words[index_word];
+            count_spaces = 0;
+            show_text = get_show_text(current_word);
+            wordArea.Text = show_text;
+            centering_text(wordArea);
+            lives = 6;
+            count_success = 0;
         }
-
-        static void start_game(RichTextBox wordArrea, PictureBox[] l_i)
+        public static void start_game(RichTextBox wordArea, PictureBox[] lives_image)
         {
-            s_g(wordArrea);
-            Bitmap bmp = new Bitmap(Properties.Resources.depositphotos_14850833_stock_photo_red_gift_box);
-            for(int i = 0; i < l_i.Length; i++)
+            start_game(wordArea);
+            var bmp = new Bitmap(Properties.Resources.depositphotos_14850833_stock_photo_red_gift_box);
+            for (int i = 0; i < lives_image.Length; i++)
             {
-                l_i[i].SizeMode = PictureBoxSizeMode.Zoom;
-                l_i[i].Image = bmp;
+                lives_image[i].SizeMode = PictureBoxSizeMode.Zoom;
+                lives_image[i].Image = bmp;
             }
-
         }
 
-        
-        static void centering_text(RichTextBox word_area)
+        public static string get_show_text(string word)
+        {
+            string text = "";
+            for (int i = 0; i < word.Length; i++)
+            {
+                if (word[i] == ' ')
+                {
+                    text += "  ";
+                    count_spaces++;
+                }
+                else
+                {
+                    text += "_ ";
+                }
+            }
+            return text;
+        }
 
+        public static void centering_text(RichTextBox word_area)
         {
             word_area.SelectAll();
             word_area.SelectionAlignment = HorizontalAlignment.Center;
         }
-        static bool is_contains(string w, char s)
-        {
 
-            for (int i = 0; i < w.Length; i++)
+        public static bool is_contains(string word, char symbol)
+        {
+            bool isContains = false;
+            for (int i = 0; i < word.Length; i++)
             {
-                if (w[i] == s)
+                if (word[i] == symbol)
                 {
-                    return true;
+                    isContains = true;
+                    return isContains;
                 }
-
             }
-            return false;
+            return isContains;
         }
-        static string get_show_text(string w)
+
+        public static string get_new_show_text(string word, char symbol, string old_show_text)
         {
-            string r = "";
-            for (int i = 0; i < w.Length; i++)
+            string new_show_text = "";
+            for (int i = 0; i < old_show_text.Length; i += 2)
             {
-                if (w[i] == ' ')
+                if (word[i / 2] == symbol)
                 {
-                    r += "  ";
-                    c_sp++;
+                    new_show_text += symbol + " ";
+                    count_success++;
                 }
                 else
                 {
-                    r += "* ";
+                    new_show_text += old_show_text[i] + " ";
                 }
-
             }
-            return r;
+            return new_show_text;
         }
-            public static void BSK(RichTextBox wordArrea,char sumbol,Button cb,Button sb)
+
+        public static void button_symbol_click(RichTextBox wordArea, char symbol, Button cur_button, Button startButton)
         {
-            bool ip = is_contains(c_w,sumbol);
-            if (ip)
+            bool is_cont = is_contains(current_word, symbol);
+            if (is_cont)
             {
-                s_t = get_nshow_text(c_w, sumbol, s_t);
-                wordArrea.Text = s_t;
-                centering_text(wordArrea);
-            }else
-            {
-                c_l--;
-                l_i[c_l].Image = null;
+                show_text = get_new_show_text(current_word, symbol, show_text);
+                wordArea.Text = show_text;
+                centering_text(wordArea);
             }
-            cb.Enabled = false;
-            if ((c_su + c_sp) == c_w.Length)
+            else
             {
-                using (Form1 f = new Form1())
+                lives--;
+                lives_image[lives].Image = null;
+            }
+            cur_button.Enabled = false;
+            if ((count_success + count_spaces) == current_word.Length)
+            {
+                using (Form1 succesorm = new Form1())
                 {
-                    f.ShowDialog();
+                    succesorm.ShowDialog();
                 }
-
-                sb.PerformClick();
             }
-            else if (c_l == 0)
+            else if (lives == 0)
             {
-                using (Form1 form = new Form1())
+                using (Form3 lossForm = new Form3())
                 {
-                    form.ShowDialog();
+                    lossForm.ShowDialog();
                 }
-                sb.PerformClick();
+                startButton.PerformClick();
             }
+        }
 
-
+        private void PictureBox7_Click(object sender, EventArgs e)
+        {
 
         }
-        public static void ct(RichTextBox word_area)
+
+        private void StartGame_Click(object sender, EventArgs e)
         {
-            word_area.SelectAll();
-            word_area.SelectionAlignment = HorizontalAlignment.Center;
-        }
-        static string get_nshow_text(string w, char sumbol, string ost)
-        {
-            string resulf = "";
-            for (int i = 0; i < ost.Length; i++)
+            start_game(wordArea, lives_image);
+
+            Button[] buttons = new Button[] { button1, button2, button3, button4, button5,
+            button6, button7, button8, button9, button10, button11, button12, button13,
+            button14, button15, button16, button17, button18, button19, button20, button21,
+            button22, button23, button24, button25, button26, button27, button28, button29,
+            button30, button31};
+
+            for (int i = 0; i < buttons.Length; i++)
             {
-                if (w[i/2] == sumbol)
-                {
-                    resulf += sumbol + " ";
-                    c_su++;
-                }
-                else
-                {
-                    resulf += ost[i] + " ";
-                }
+                buttons[i].Enabled = true;
             }
-            return resulf;
+        }
+
+        private void CloseGame_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            button_symbol_click(wordArea, 'б', button2, startGame);
         }
     }
 

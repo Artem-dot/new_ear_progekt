@@ -86,6 +86,7 @@
             this.pictureBox7.Size = new System.Drawing.Size(262, 290);
             this.pictureBox7.TabIndex = 46;
             this.pictureBox7.TabStop = false;
+            this.pictureBox7.Click += new System.EventHandler(this.PictureBox7_Click);
             // 
             // pictureBox6
             // 
@@ -143,6 +144,7 @@
             this.closeGame.TabIndex = 39;
             this.closeGame.Text = "Закрыть";
             this.closeGame.UseVisualStyleBackColor = true;
+            this.closeGame.Click += new System.EventHandler(this.CloseGame_Click);
             // 
             // startGame
             // 
@@ -152,6 +154,7 @@
             this.startGame.TabIndex = 28;
             this.startGame.Text = "Начать заново";
             this.startGame.UseVisualStyleBackColor = true;
+            this.startGame.Click += new System.EventHandler(this.StartGame_Click);
             // 
             // button31
             // 
@@ -433,6 +436,7 @@
             this.button2.TabIndex = 25;
             this.button2.Text = "Б";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // button1
             // 
